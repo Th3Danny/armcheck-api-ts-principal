@@ -1,0 +1,5 @@
+export * from "./create.specialist"
+export * from "./deletedCorreo.specialist"
+export * from "./list.specialist"
+export * from "./update.specialist"
+export * from "./getCorreo.specialist"
