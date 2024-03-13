@@ -16,8 +16,8 @@ USE `armcheckdb` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `armcheckdb`.`especialistas` (
   `id_especialista` INT NOT NULL AUTO_INCREMENT,
-  `nombres` VARCHAR(45) NOT NULL,
-  `apellidos` VARCHAR(45) NOT NULL,
+  `nombre` VARCHAR(45) NOT NULL,
+  `apellido` VARCHAR(45) NOT NULL,
   `especialidad` VARCHAR(45) NOT NULL,
   `correo` VARCHAR(45) NOT NULL,
   `contrasena` VARCHAR(200) NOT NULL,
