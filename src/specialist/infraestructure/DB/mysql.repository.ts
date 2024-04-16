@@ -12,11 +12,11 @@ export class MysqlEspecialistaRepository implements EspecialistaRepository {
     }
 
     async findByEmail(correo: string): Promise<Especialista> {
-        const especialista = await db.query(
-            `SELECT * FROM especialistas WHERE correo = ?`,
-            [correo]
-        );
-        return especialista[0] as unknown as Especialista;
+        const query = "select * from especialistas where correo = ?";
+        return db.execute(query, [correo]).then((res: any) => {
+            console.log(res[0]);
+            return res[0][0] as Especialista;
+        });
     }
     
     async update(correo: string ,especialista: Especialista): Promise<Especialista> {

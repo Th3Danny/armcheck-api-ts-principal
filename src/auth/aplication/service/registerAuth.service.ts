@@ -5,7 +5,7 @@ import { AuthResponse } from "../../domain/entities";
 import { createContrasenaHash, createJwt } from "../utils";
 
 export class RegisterAuthService {
-  constructor(private readonly especialistaRepository: EspecialistaRepository) {}
+  constructor(private readonly especialistaRepository: EspecialistaRepository) { }
   async run(especialista: Especialista): Promise<AuthResponse> {
     try {
       const resultValidation = validateEspecialista(especialista);
@@ -15,9 +15,9 @@ export class RegisterAuthService {
           const password = createContrasenaHash(resultValidation.data.contrasena);
           const newUser = {
             ...resultValidation.data,
-            password,
+            contrasena: password,
           };
-          const responseUser : any = await this.especialistaRepository.create(newUser);
+          const responseUser: any = await this.especialistaRepository.create(newUser);
           const jwt = createJwt(responseUser)
           const responseToke: AuthResponse = {
             token: jwt,
@@ -25,7 +25,7 @@ export class RegisterAuthService {
           return responseToke;
         }
       }
-      throw "Could not create"
+      throw "No se logro crear por un error en la validacion de los datos"
     } catch (err: any) {
       console.log(err);
       throw new Error(err);

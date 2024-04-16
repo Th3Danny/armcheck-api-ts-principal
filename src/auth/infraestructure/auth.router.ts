@@ -6,7 +6,7 @@ registerAuthController,
 
 const authRouter = Router();
 
-authRouter.get("/", loginAuthController.run.bind(loginAuthController));
+authRouter.get("/login", loginAuthController.run.bind(loginAuthController));
 authRouter.post("/register", registerAuthController.run.bind(registerAuthController));
 
 export { authRouter };
