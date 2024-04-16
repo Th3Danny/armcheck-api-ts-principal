@@ -1,13 +1,12 @@
 import { Router } from "express";
 import {
-  loginAuthController,
-  registerAuthController,
+loginAuthController,
+registerAuthController,
 } from "./auth.dependencies";
 
 const authRouter = Router();
 
-authRouter
-  .post("/", loginAuthController.run.bind(loginAuthController))
-  .post("/register", registerAuthController.run.bind(registerAuthController));
+authRouter.get("/", loginAuthController.run.bind(loginAuthController));
+authRouter.post("/register", registerAuthController.run.bind(registerAuthController));
 
-export default authRouter;
+export { authRouter };

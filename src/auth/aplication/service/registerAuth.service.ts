@@ -1,25 +1,23 @@
-import { User } from "../../../user/domain/entities";
-import { UserRepository } from "../../../user/domain/repository/userRepository";
-import { validateUser } from "../../../user/domain/validators/user.validator";
+import { validateEspecialista } from "../../../specialist/domain/validations/especialista.validation";
+import { Especialista } from "../../../specialist/domain/entities/especialista.objet";
+import { EspecialistaRepository } from "../../../specialist/domain/repository/especialista.repository"
 import { AuthResponse } from "../../domain/entities";
 import { createContrasenaHash, createJwt } from "../utils";
 
 export class RegisterAuthService {
-  constructor(private readonly userRepository: UserRepository) {}
-  async run(user: User): Promise<AuthResponse> {
+  constructor(private readonly especialistaRepository: EspecialistaRepository) {}
+  async run(especialista: Especialista): Promise<AuthResponse> {
     try {
-      const resultValidation = validateUser(user);
+      const resultValidation = validateEspecialista(especialista);
       if (resultValidation.success) {
-        const isUserCreated = await this.existingUser(resultValidation.data.correo);
+        const isUserCreated = await this.existingEspecialista(resultValidation.data.correo);
         if (!isUserCreated) {
-          console.log(resultValidation.data.contrasena)
           const password = createContrasenaHash(resultValidation.data.contrasena);
-          console.log(password)
           const newUser = {
             ...resultValidation.data,
             password,
           };
-          const responseUser : any = await this.userRepository.createUser(newUser);
+          const responseUser : any = await this.especialistaRepository.create(newUser);
           const jwt = createJwt(responseUser)
           const responseToke: AuthResponse = {
             token: jwt,
@@ -34,8 +32,8 @@ export class RegisterAuthService {
     }
   }
 
-  private async existingUser(correo: string): Promise<boolean> {
-    const existingUser = await this.userRepository.getUserByCorreo(correo);
+  private async existingEspecialista(correo: string): Promise<boolean> {
+    const existingUser = await this.especialistaRepository.findByEmail(correo);
     if (existingUser) return true;
     return false;
   }

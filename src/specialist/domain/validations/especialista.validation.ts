@@ -9,7 +9,7 @@ const especialistaSchema = z.object({
     apellido: z.string({
         required_error: 'El apellido es requerido',
         invalid_type_error: 'El apellido debe ser de tipo string'
-    }).optional(),
+    }),
     correo: z.string({
         required_error: 'El email es requerido',
         invalid_type_error: 'El email debe ser de tipo string'
