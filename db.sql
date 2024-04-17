@@ -22,10 +22,7 @@ USE `armcheckdb` ;
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `armcheckdb`.`analisis` (
   `id_analisis` INT NOT NULL AUTO_INCREMENT,
-  `antebrazo` TINYINT NOT NULL,
-  `brazo` TINYINT NOT NULL,
-  `hombro` TINYINT NOT NULL,
-  `nota` VARCHAR(200) NOT NULL,
+  `arreglo_datos` TEXT NOT NULL,
   PRIMARY KEY (`id_analisis`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb3;
@@ -52,10 +49,9 @@ CREATE TABLE IF NOT EXISTS `armcheckdb`.`especialistas` (
   `apellido` VARCHAR(45) NOT NULL,
   `especialidad` VARCHAR(45) NOT NULL,
   `correo` VARCHAR(45) NOT NULL,
-  `contrasena` VARCHAR(200)|1| NOT NULL,
+  `contrasena` VARCHAR(200) NOT NULL,
   PRIMARY KEY (`id_especialista`))
 ENGINE = InnoDB
-AUTO_INCREMENT = 2
 DEFAULT CHARACTER SET = utf8mb3;
 
 
@@ -114,10 +110,11 @@ DEFAULT CHARACTER SET = utf8mb3;
 CREATE TABLE IF NOT EXISTS `armcheckdb`.`pagos` (
   `id_pagos` INT NOT NULL AUTO_INCREMENT,
   `id_especialista` INT NOT NULL,
-  `pago` FLOAT NOT NULL,
   `fecha_inicio` DATE NOT NULL DEFAULT (CURRENT_DATE()),
   `fecha_fin` DATE NOT NULL,
-  `activo` TINYINT NOT NULL,
+  `numero_tarjeta` VARCHAR(45) NOT NULL,
+  `cvv` VARCHAR(45) NOT NULL,
+  `fecha_vencimiento` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id_pagos`),
   INDEX `refe_especialista_pago_idx` (`id_especialista` ASC) VISIBLE,
   CONSTRAINT `refe_especialista_pago`

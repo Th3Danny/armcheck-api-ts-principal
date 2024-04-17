@@ -18,6 +18,18 @@ export class MysqlEspecialistaRepository implements EspecialistaRepository {
             return res[0][0] as Especialista;
         });
     }
+
+    async findByEmailPremium(correo: string): Promise<Especialista> {
+        const query = " SELECT COUNT(c.id_consultas) AS cantidad_citas FROM armcheckdb.consultas c JOIN armcheckdb.pacientes pa ON c.id_paciente = pa.id_persona JOIN armcheckdb.especialistas e ON pa.id_especialista = e.id_especialista WHERE e.correo  = ? ";
+        const query2 = "SELECT p.* FROM armcheckdb.pagos AS p JOIN armcheckdb.especialistas AS e ON p.id_especialista = e.id_especialista WHERE e.correo = ? ORDER BY p.fecha_fin DESC LIMIT 1"
+        const result1 = await db.execute(query, [correo]);
+        const result2 = await db.execute(query2, [correo]);
+        const especialista = {
+            ...result1[0],
+            ...result2[0]
+        } as unknown as Especialista;
+        return especialista;
+    }
     
     async update(correo: string ,especialista: Especialista): Promise<Especialista> {
         await db.query(
@@ -39,7 +51,6 @@ export class MysqlEspecialistaRepository implements EspecialistaRepository {
         const especialistas = await db.query(
             `SELECT * FROM especialistas`
         );
-        //posible error
         return especialistas as unknown as Especialista[];
     }
 }
