@@ -7,9 +7,9 @@ import {
 
 const authRouter = Router();
 
-authRouter.get(
+authRouter.post(
   "/login",
-  verifyTokenService.run.bind(verifyTokenService),
+  /* verifyTokenService.run.bind(verifyTokenService), */
   loginAuthController.run.bind(loginAuthController)
 );
 authRouter.post(

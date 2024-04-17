@@ -1,64 +1,42 @@
--- MySQL Workbench Forward Engineering
+-- Establecer valores originales para UNIQUE_CHECKS, FOREIGN_KEY_CHECKS y SQL_MODE
+SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=1;
+SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=1;
+SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO';
 
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
--- -----------------------------------------------------
--- Schema mydb
--- -----------------------------------------------------
--- -----------------------------------------------------
--- Schema armcheckdb
--- -----------------------------------------------------
-
--- -----------------------------------------------------
--- Schema armcheckdb
--- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `armcheckdb` DEFAULT CHARACTER SET utf8mb3 ;
+-- Creación del esquema armcheckdb si no existe
+CREATE SCHEMA IF NOT EXISTS `armcheckdb` DEFAULT CHARACTER SET utf8mb4 ;
 USE `armcheckdb` ;
 
--- -----------------------------------------------------
--- Table `armcheckdb`.`analisis`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `armcheckdb`.`analisis` (
+-- Creación de la tabla `analisis`
+CREATE TABLE IF NOT EXISTS `analisis` (
   `id_analisis` INT NOT NULL AUTO_INCREMENT,
+  `id_unico` VARCHAR(45) NOT NULL,
   `arreglo_datos` TEXT NOT NULL,
-  PRIMARY KEY (`id_analisis`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+  PRIMARY KEY (`id_analisis`),
+  UNIQUE KEY `id_unico_UNIQUE` (`id_unico`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
--- -----------------------------------------------------
--- Table `armcheckdb`.`dispositivos`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `armcheckdb`.`dispositivos` (
+-- Creación de la tabla `dispositivos`
+CREATE TABLE IF NOT EXISTS `dispositivos` (
   `id_dispositivos` INT NOT NULL AUTO_INCREMENT,
   `sp32` VARCHAR(45) NOT NULL,
   `estado` TINYINT NOT NULL,
-  PRIMARY KEY (`id_dispositivos`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+  PRIMARY KEY (`id_dispositivos`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
--- -----------------------------------------------------
--- Table `armcheckdb`.`especialistas`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `armcheckdb`.`especialistas` (
+-- Creación de la tabla `especialistas`
+CREATE TABLE IF NOT EXISTS `especialistas` (
   `id_especialista` INT NOT NULL AUTO_INCREMENT,
   `nombre` VARCHAR(45) NOT NULL,
   `apellido` VARCHAR(45) NOT NULL,
   `especialidad` VARCHAR(45) NOT NULL,
   `correo` VARCHAR(45) NOT NULL,
   `contrasena` VARCHAR(200) NOT NULL,
-  PRIMARY KEY (`id_especialista`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+  PRIMARY KEY (`id_especialista`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
--- -----------------------------------------------------
--- Table `armcheckdb`.`pacientes`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `armcheckdb`.`pacientes` (
+-- Creación de la tabla `pacientes`
+CREATE TABLE IF NOT EXISTS `pacientes` (
   `id_persona` INT NOT NULL AUTO_INCREMENT,
   `id_especialista` INT NOT NULL,
   `nombres` VARCHAR(45) NOT NULL,
@@ -68,46 +46,45 @@ CREATE TABLE IF NOT EXISTS `armcheckdb`.`pacientes` (
   `peso` FLOAT NOT NULL,
   `genero` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id_persona`),
-  INDEX `especialista_ref_idx` (`id_especialista` ASC) VISIBLE,
-  CONSTRAINT `especialista_ref`
+  KEY `id_especialista_idx` (`id_especialista`),
+  CONSTRAINT `id_especialista`
     FOREIGN KEY (`id_especialista`)
-    REFERENCES `armcheckdb`.`especialistas` (`id_especialista`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+    REFERENCES `especialistas` (`id_especialista`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
--- -----------------------------------------------------
--- Table `armcheckdb`.`consultas`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `armcheckdb`.`consultas` (
+-- Creación de la tabla `consultas`
+CREATE TABLE IF NOT EXISTS `consultas` (
   `id_consultas` INT NOT NULL AUTO_INCREMENT,
-  `id_analisis` INT NOT NULL,
+  `id_unico` VARCHAR(45) NOT NULL,
   `id_dispositivo` INT NOT NULL,
   `id_paciente` INT NOT NULL,
   `fecha_consulta` DATE NOT NULL,
   PRIMARY KEY (`id_consultas`),
-  INDEX `dispositivo_ref_idx` (`id_dispositivo` ASC) VISIBLE,
-  INDEX `analisis_ref_idx` (`id_analisis` ASC) VISIBLE,
-  INDEX `paciente_ref_idx` (`id_paciente` ASC) VISIBLE,
-  CONSTRAINT `analisis_ref`
-    FOREIGN KEY (`id_analisis`)
-    REFERENCES `armcheckdb`.`analisis` (`id_analisis`),
-  CONSTRAINT `dispositivo_ref`
+  KEY `id_unico_idx` (`id_unico`),
+  KEY `id_dispositivo_idx` (`id_dispositivo`),
+  KEY `id_paciente_idx` (`id_paciente`),
+  CONSTRAINT `fk_consultas_analisis`
+    FOREIGN KEY (`id_unico`)
+    REFERENCES `analisis` (`id_unico`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_consultas_dispositivos`
     FOREIGN KEY (`id_dispositivo`)
-    REFERENCES `armcheckdb`.`dispositivos` (`id_dispositivos`),
-  CONSTRAINT `paciente_ref`
+    REFERENCES `dispositivos` (`id_dispositivos`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_consultas_pacientes`
     FOREIGN KEY (`id_paciente`)
-    REFERENCES `armcheckdb`.`pacientes` (`id_persona`))
-ENGINE = InnoDB
-DEFAULT CHARACTER SET = utf8mb3;
+    REFERENCES `pacientes` (`id_persona`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
-
-
--- -----------------------------------------------------
--- Table `armcheckdb`.`pagos`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `armcheckdb`.`pagos` (
+-- Creación de la tabla `pagos`
+CREATE TABLE IF NOT EXISTS `pagos` (
   `id_pagos` INT NOT NULL AUTO_INCREMENT,
   `id_especialista` INT NOT NULL,
   `fecha_inicio` DATE NOT NULL DEFAULT (CURRENT_DATE()),
@@ -116,15 +93,15 @@ CREATE TABLE IF NOT EXISTS `armcheckdb`.`pagos` (
   `cvv` VARCHAR(45) NOT NULL,
   `fecha_vencimiento` VARCHAR(45) NOT NULL,
   PRIMARY KEY (`id_pagos`),
-  INDEX `refe_especialista_pago_idx` (`id_especialista` ASC) VISIBLE,
-  CONSTRAINT `refe_especialista_pago`
+  KEY `id_especialista_pago_idx` (`id_especialista`),
+  CONSTRAINT `id_especialista_pago`
     FOREIGN KEY (`id_especialista`)
-    REFERENCES `armcheckdb`.`especialistas` (`id_especialista`)
+    REFERENCES `especialistas` (`id_especialista`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-ENGINE = InnoDB;
+    ON UPDATE NO ACTION
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-
+-- Restaurar valores originales de UNIQUE_CHECKS, FOREIGN_KEY_CHECKS y SQL_MODE
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

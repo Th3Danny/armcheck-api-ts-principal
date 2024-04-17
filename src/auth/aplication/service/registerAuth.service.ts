@@ -18,9 +18,13 @@ export class RegisterAuthService {
             contrasena: password,
           };
           const responseUser: any = await this.especialistaRepository.create(newUser);
+          const response = await this.especialistaRepository.findByEmail(responseUser.correo);
           const jwt = createJwt(responseUser)
           const responseToke: AuthResponse = {
             token: jwt,
+            correo: responseUser.correo,
+            id_especialista: response.id_especialista,
+            especialidad: responseUser.especialidad,
           };
           return responseToke;
         }
