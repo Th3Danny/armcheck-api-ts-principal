@@ -12,18 +12,17 @@ export class LoginAuthService {
       const resultValidation = validateAuth(especialista);
       if (resultValidation.success) {
         const response = await this.especialistaRepository.findByEmail(especialista.correo);
-        //se checan credenciales
-    
         const isPasswordValid = this.compareCredentials(
           especialista,
           response.contrasena
         );
         if (isPasswordValid) {
           const jwt = createJwt(especialista);
-          console.log(jwt)
-          //Se crea el token y se envia;
-          const responseToken: AuthResponse = {
+          let responseToken: AuthResponse = {
             token: jwt,
+            correo: response.correo,
+            id_especialista: response.id_especialista,
+            especialidad: response.especialidad,
           };
           return responseToken;
         }
