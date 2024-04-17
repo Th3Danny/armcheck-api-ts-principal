@@ -20,7 +20,6 @@ export class RegisterAuthService {
           const responseUser: any = await this.especialistaRepository.create(newUser);
           const response = await this.especialistaRepository.findByEmail(responseUser.correo);
           const jwt = createJwt(responseUser)
-          console.log(responseUser);
           const responseToke: AuthResponse = {
             token: jwt,
             correo: responseUser.correo,
