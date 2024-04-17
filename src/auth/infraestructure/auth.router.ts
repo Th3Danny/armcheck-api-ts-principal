@@ -1,12 +1,20 @@
 import { Router } from "express";
 import {
-loginAuthController,
-registerAuthController,
+  loginAuthController,
+  registerAuthController,
+  verifyTokenService,
 } from "./auth.dependencies";
 
 const authRouter = Router();
 
-authRouter.get("/login", loginAuthController.run.bind(loginAuthController));
-authRouter.post("/register", registerAuthController.run.bind(registerAuthController));
+authRouter.get(
+  "/login",
+  verifyTokenService.run.bind(verifyTokenService),
+  loginAuthController.run.bind(loginAuthController)
+);
+authRouter.post(
+  "/register",
+  registerAuthController.run.bind(registerAuthController)
+);
 
 export { authRouter };
