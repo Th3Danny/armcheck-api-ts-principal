@@ -48,7 +48,7 @@ export class MySQlRepositoryPaciente implements PacienteRepository{
   
 
     deletePacienteById(id_persona: number): Promise<void> {
-        const query="delete from producto where id_producto = ?;"
+        const query="delete from pacientes where id_persona = ?;"
       return db.execute(query,[id_persona]).then((res:any)=> res[0] as void)
     }
 }
