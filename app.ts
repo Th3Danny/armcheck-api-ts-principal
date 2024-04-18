@@ -4,7 +4,7 @@ import indexRouter from "./src/shared/infraestructure/index.router";
 import { db } from "./src/shared/application/mysqlConnection";
 
 const app = express();
-const PORT = process.env.PORT || "3000";
+const PORT = process.env.PORT || "3001";
 
 let corsOptions = {
     origin: '*',
